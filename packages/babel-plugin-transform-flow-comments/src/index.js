@@ -1,4 +1,4 @@
-export default function ({ types: t }) {
+export default function({ types: t }) {
   function wrapInFlowComment(path, parent) {
     path.addComment("trailing", generateComment(path, parent));
     path.replaceWith(t.noop());
@@ -33,14 +33,14 @@ export default function ({ types: t }) {
       AssignmentPattern: {
         exit({ node }) {
           node.left.optional = false;
-        }
+        },
       },
 
       // strip optional property from function params - facebook/fbjs#17
       Function: {
         exit({ node }) {
-          node.params.forEach((param) => param.optional = false);
-        }
+          node.params.forEach(param => param.optional = false);
+        },
       },
 
       // support for `class X { foo: string }` - #4622
@@ -61,11 +61,13 @@ export default function ({ types: t }) {
       // support `import type A` and `import typeof A` #10
       ImportDeclaration(path) {
         const { node, parent } = path;
-        if (t.isImportDeclaration(node) && node.importKind !== "type" && node.importKind !== "typeof") {
+        if (
+          t.isImportDeclaration(node) && node.importKind !== "type" && node.importKind !== "typeof"
+        ) {
           return;
         }
         wrapInFlowComment(path, parent);
-      }
-    }
+      },
+    },
   };
 }
